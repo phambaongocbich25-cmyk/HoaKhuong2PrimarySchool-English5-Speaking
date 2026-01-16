@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English-5-Speaking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&family=Pangolin&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4A90E2; /* Xanh dương thân thiện */
+            --secondary: #6C5CE7; /* Tím nhẹ nhàng */
+            --accent: #2ECC71; /* Xanh lá tươi */
+            --error: #FF7F50; /* Coral - Màu cam san hô để sửa lỗi nhẹ nhàng */
+            --bg: #F0F7FF; 
+            --white: #FFFFFF;
+            --gold: #F1C40F;
+        }
+        body { font-family: 'Lexend', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #2D3436; }
+        .container { max-width: 900px; margin: auto; background: var(--white); padding: 40px; border-radius: 45px; box-shadow: 0 25px 50px rgba(74, 144, 226, 0.15); }
+        
+        .header-title { text-align: center; color: var(--primary); font-family: 'Pangolin', cursive; font-size: 3.5rem; margin: 0 0 20px 0; text-shadow: 2px 2px #E1F0FF; }
+        
+        .mode-switch { display: flex; gap: 12px; margin-bottom: 30px; background: #E8F1F9; padding: 8px; border-radius: 50px; }
+        .mode-btn { flex: 1; padding: 14px; border: none; border-radius: 40px; cursor: pointer; font-weight: bold; font-family: inherit; transition: 0.4s; font-size: 1.1rem; color: #576574; }
+        .mode-btn.active { background: var(--primary); color: white; box-shadow: 0 6px 18px rgba(74, 144, 226, 0.4); }
+
+        .input-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        input, select, textarea { width: 100%; padding: 18px; border-radius: 22px; border: 2px solid #DCE4EC; font-family: inherit; font-size: 16px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        input:focus, select:focus { border-color: var(--primary); background: #F8FBFF; }
+
+        .card { background: #F8FBFF; padding: 30px; border-radius: 35px; margin-bottom: 25px; border: 1px solid #E3EEF9; }
+        .sample-box { background: white; padding: 25px; border-radius: 22px; border-left: 10px solid var(--accent); margin: 20px 0; line-height: 1.8; font-size: 1.2rem; color: #34495e; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02); }
+        
+        .btn-record { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 22px; border-radius: 50px; font-size: 1.4rem; font-weight: bold; width: 100%; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(108, 92, 231, 0.3); }
+        .btn-record:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(108, 92, 231, 0.4); }
+        .btn-listen { background: white; color: var(--primary); border: 2.5px solid var(--primary); padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; margin-bottom: 15px; transition: 0.2s; }
+        .btn-listen:hover { background: var(--primary); color: white; }
+
+        .feedback-area { background: #FFF; padding: 30px; border-radius: 30px; border: 3px dashed #BDC3C7; margin-top: 25px; }
+        .correct { color: var(--accent); font-weight: bold; }
+        .fix { color: var(--error); text-decoration: underline; font-weight: bold; cursor: pointer; }
+        .suggestion-box { margin-top: 20px; padding: 20px; background: #EBF5FF; border-radius: 20px; border: 1px solid #A9D1F7; }
+
+        /* Certificate Styling */
+        #cert {
+            display: none; margin-top: 50px; padding: 60px; 
+            border: 20px solid #FDCB6E; background: #FFFEF9;
+            text-align: center; border-radius: 15px; position: relative;
+            box-shadow: 0 0 60px rgba(0,0,0,0.15);
+            background-image: radial-gradient(#FDCB6E 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+        }
+        .cert-head { font-family: 'Pangolin', cursive; font-size: 4.5rem; color: #B8860B; margin: 0; }
+        .cert-sub { letter-spacing: 6px; color: #95a5a6; font-weight: bold; font-size: 1.3rem; margin-top: 10px; }
+        .cert-name { font-size: 3.8rem; color: var(--secondary); border-bottom: 4px solid #EEE; display: inline-block; margin: 30px 0; padding: 0 50px; font-family: 'Pangolin', cursive; }
+        .stars { font-size: 5rem; color: var(--gold); margin: 25px 0; letter-spacing: 15px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); }
+        .cert-footer { display: flex; justify-content: space-around; margin-top: 90px; }
+        .signature { border-top: 2px solid #7f8c8d; width: 280px; padding-top: 15px; font-style: italic; font-size: 1.4rem; color: #2D3436; font-family: 'Pangolin', cursive; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-title">English-5-Speaking</div>
+
+    <div class="mode-switch">
+        <button id="btnUnit" class="mode-btn active" onclick="setMode('unit')">Học Theo Unit</button>
+        <button id="btnFree" class="mode-btn" onclick="setMode('free')">Nói Tự Do (Free Talk)</button>
+    </div>
+
+    <div class="input-bar">
+        <input type="text" id="nameInp" placeholder="Tên của con là gì nhỉ?">
+        <input type="text" id="classInp" placeholder="Con học lớp mấy? (Vd: 5/1)">
+    </div>
+
+    <div id="unitSection" class="card">
+        <label><b>Chọn Unit con muốn học:</b></label>
+        <select id="unitSel" onchange="changeUnit()" style="margin-top:12px; cursor:pointer;"></select>
+        <div class="sample-box" id="sampleTxt"></div>
+        <button class="btn-listen" onclick="playVoice(document.getElementById('sampleTxt').innerText)">🔊 Nghe cô đọc mẫu nhé</button>
+    </div>
+
+    <div id="freeSection" class="card" style="display:none">
+        <div class="sample-box"><b>AI Mode:</b> Con hãy nói bất cứ điều gì con thích bằng tiếng Anh. Cô sẽ giúp con sửa lại cho thật hay nhé! 🌟</div>
+    </div>
+
+    <div class="card">
+        <textarea id="output" rows="3" placeholder="Lời con nói sẽ hiện ở đây..."></textarea>
+        <button class="btn-record" id="recBtn" onclick="startRec()">🎙️ NHẤN VÀO ĐỂ NÓI</button>
+    </div>
+
+    <div class="feedback-area" id="feedback">
+        <h3 style="margin-top:0; color:var(--primary)">🤖 Phân tích của Cô AI:</h3>
+        <div id="fbContent">Đang đợi con luyện tập đấy...</div>
+    </div>
+
+    <div id="cert">
+        <div class="cert-head">CERTIFICATE</div>
+        <div class="cert-sub">OF EXCELLENCE</div>
+        <p style="font-size: 1.5rem; margin-top: 40px; color: #7f8c8d;">Awarded to the amazing student</p>
+        <div class="cert-name" id="cName">...</div>
+        <p style="font-size: 1.3rem;">Class: <span id="cClass" style="font-weight: bold;">...</span></p>
+        <p style="font-size: 1.4rem; color: #34495e;">For successfully completing</p>
+        <h2 id="cUnit" style="color:#D4AF37; font-size: 2.5rem; margin: 10px 0;">UNIT 1</h2>
+        <div class="stars" id="cStars">⭐⭐⭐⭐⭐</div>
+        <p style="font-size: 1.3rem; margin-top: 30px;"><i>"Your voice is beautiful. Keep it up!"</i></p>
+        <div class="cert-footer">
+            <div class="signature">Mrs Tran Thi Kim Yen</div>
+            <div class="signature">Mrs Pham Thi Ngoc Bich</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const lessons = {
+    1: { t: "Unit 1: All about me!", s: "I’m Hoang. I’m in class 5/3. I live in the countryside. My favourite colour is yellow. My favourite animal is a dolphin. My favourite food is a sandwich. My favourite sport is table tennis." },
+    2: { t: "Unit 2: Our homes", s: "I live in a flat. My address is 65 Le Loi Street. It is a big and modern building in the city. I love my home." },
+    3: { t: "Unit 3: My foreign friends", s: "I have many foreign friends. He is Vietnamese. She is American. He is very active and she is very clever." },
+    4: { t: "Unit 4: Our free-time activities", s: "I like watering the flowers and playing the violin. At the weekend, I always surf the Internet and read books." },
+    5: { t: "Unit 5: My future job", s: "I’d like to be a teacher because I want to teach children. My brother wants to be a firefighter to save people." },
+    6: { t: "Unit 6: Our school rooms", s: "Go past the library and turn right. The art room is on the second floor. It is very beautiful." },
+    7: { t: "Unit 7: Our favourite school activities", s: "She likes reading books because it is very interesting. We love doing school projects together." },
+    8: { t: "Unit 8: In our classroom", s: "The crayons are on the table and the glue sticks are beside the books. This pencil sharpener is mine." },
+    9: { t: "Unit 9: Our outdoor activities", s: "We were at the campsite last week. We danced around the campfire and watched the fish in the pond." },
+    10: { t: "Unit 10: Our school trip", s: "They went to Ba Na Hills last month. They visited the old buildings and took many beautiful photos." },
+    11: { t: "Unit 11: Family time", s: "In our vacation, I swam with my mother. We took a boat trip around the bay and ate delicious seafood." },
+    12: { t: "Unit 12: Our Tet holiday", s: "I will make banh chung and decorate the house. I will visit my grandparents and get lucky money." },
+    13: { t: "Unit 13: Our special days", s: "What will you do on Children's Day? We will sing and dance. We will have pizza and milk tea." },
+    14: { t: "Unit 14: Staying healthy", s: "She does yoga twice a week to stay healthy. She does morning exercise and eats healthy food every day." },
+    15: { t: "Unit 15: Our health", s: "I have a toothache and a fever. You should go to the dentist and take some rest." },
+    16: { t: "Unit 16: Seasons and the weather", s: "It is cold in winter, so I wear a jumper and jeans. In summer, it is hot and sunny." },
+    17: { t: "Unit 17: Stories for children", s: "The main characters are the fox and the crow. The tortoise ran fast and worked very hard to win the race." },
+    18: { t: "Unit 18: Means of transport", s: "I want to visit Dragon Bridge. You can get there by bus or by taxi. It is very fantastic." },
+    19: { t: "Unit 19: Places of interest", s: "I think Hoi An Old Town is beautiful and peaceful. It is about twenty-nine kilometres from Da Nang." },
+    20: { t: "Unit 20: Our summer holidays", s: "I am going to visit Phong Nha Cave this summer. I am going to go camping and join a music club." }
+};
+
+let currentMode = 'unit';
+const sel = document.getElementById('unitSel');
+for(let i in lessons) sel.innerHTML += `<option value="${i}">${lessons[i].t}</option>`;
+
+function setMode(m) {
+    currentMode = m;
+    document.getElementById('btnUnit').classList.toggle('active', m === 'unit');
+    document.getElementById('btnFree').classList.toggle('active', m === 'free');
+    document.getElementById('unitSection').style.display = m === 'unit' ? 'block' : 'none';
+    document.getElementById('freeSection').style.display = m === 'free' ? 'block' : 'none';
+    document.getElementById('cert').style.display = 'none';
+}
+
+function changeUnit() {
+    document.getElementById('sampleTxt').innerText = lessons[sel.value].s;
+    document.getElementById('cert').style.display = 'none';
+}
+changeUnit();
+
+// CHÚ Ý: Cấu hình giọng đọc Anh-Anh (British) để phát âm "live" là /liv/ chuẩn xác
+function playVoice(text) {
+    window.speechSynthesis.cancel();
+    let utter = new SpeechSynthesisUtterance(text);
+    let voices = window.speechSynthesis.getVoices();
+    // Ưu tiên chọn giọng nữ người Anh (Google UK English Female hoặc tương đương)
+    utter.voice = voices.find(v => v.lang === 'en-GB' && v.name.includes('Female')) || 
+                  voices.find(v => v.lang === 'en-GB') || 
+                  voices[0];
+    utter.rate = 0.82; // Tốc độ vừa phải cho học sinh tiểu học
+    utter.pitch = 1.1; // Tông giọng hơi cao, thân thiện
+    window.speechSynthesis.speak(utter);
+}
+
+const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+const rec = new Speech();
+rec.lang = 'en-US';
+
+function startRec() {
+    rec.start();
+    document.getElementById('recBtn').innerText = "🔴 CÔ ĐANG NGHE CON NÓI...";
+}
+
+rec.onresult = (e) => {
+    const said = e.results[0][0].transcript;
+    document.getElementById('output').value = said;
+    document.getElementById('recBtn').innerText = "🎙️ NHẤN VÀO ĐỂ NÓI";
+    
+    if (currentMode === 'unit') analyzeUnit(said);
+    else analyzeFree(said);
+};
+
+function analyzeUnit(said) {
+    let sample = lessons[sel.value].s.toLowerCase().replace(/[.,!]/g,"");
+    let input = said.toLowerCase().replace(/[.,!]/g,"");
+    let sArr = sample.split(" ");
+    let iArr = input.split(" ");
+    
+    let html = "";
+    let mistakes = 0;
+    
+    sArr.forEach(word => {
+        if (iArr.includes(word)) {
+            html += `<span class="correct">${word}</span> `;
+        } else {
+            html += `<span class="fix" onclick="playVoice('${word}')">${word}</span> `;
+            mistakes++;
+        }
+    });
+
+    document.getElementById('fbContent').innerHTML = `<p><b>Review:</b> (Bấm vào từ màu cam để nghe cô sửa nhé)</p><p style="font-size:1.2rem">${html}</p>`;
+    
+    // Thuật toán động viên: Chỉ cần đúng > 60% là được 5 sao khen ngợi
+    let accuracy = ((sArr.length - mistakes) / sArr.length) * 100;
+    let stars = accuracy > 60 ? 5 : (accuracy > 35 ? 4 : 3);
+    
+    if(mistakes === 0) playVoice("Excellent! Five stars for you.");
+    else playVoice("Well done! Let's practice the orange words again.");
+    
+    showCert(stars, lessons[sel.value].t);
+}
+
+function analyzeFree(said) {
+    let fixed = said.replace(/\bi is\b/gi, "I am")
+                    .replace(/\bshe have\b/gi, "she has")
+                    .replace(/\bhe have\b/gi, "he has")
+                    .replace(/\bi like play\b/gi, "I like playing");
+    
+    document.getElementById('fbContent').innerHTML = `
+        <p><b>Con vừa nói:</b> "${said}"</p>
+        <div class="suggestion-box">
+            <p style="margin:0 0 10px 0"><b>💡 Gợi ý của cô để con nói hay hơn:</b></p>
+            <p style="color:var(--primary); font-weight:bold; font-size:1.2rem; margin-bottom:15px;">"${fixed}"</p>
+            <button class="btn-listen" onclick="playVoice('${fixed}')" style="margin:0; padding:8px 20px;">🔊 Nghe cô đọc mẫu</button>
+        </div>
+    `;
+    
+    playVoice(said);
+    showCert(5, "Free Speaking Star");
+}
+
+function showCert(stars, title) {
+    document.getElementById('cName').innerText = document.getElementById('nameInp').value || "Super Star";
+    document.getElementById('cClass').innerText = document.getElementById('classInp').value || "5/1";
+    document.getElementById('cUnit').innerText = title;
+    document.getElementById('cStars').innerText = "⭐".repeat(stars);
+    document.getElementById('cert').style.display = 'block';
+    document.getElementById('cert').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Đảm bảo nạp giọng nói khi khởi động
+window.speechSynthesis.onvoiceschanged = function() {
+    window.speechSynthesis.getVoices();
+};
+</script>
+</body>
+</html>
